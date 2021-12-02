@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Hero.cpp" />
+    <ClCompile Include="Lqueue.cpp" />
     <ClCompile Include="proj5.cpp" />
     <ClCompile Include="Villian.cpp" />
   </ItemGroup>
