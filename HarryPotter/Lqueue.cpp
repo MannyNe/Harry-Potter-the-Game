@@ -223,22 +223,22 @@ T Lqueue<T>::Pop() {
 template <class T>
 void Lqueue<T>::Display() {
 
+	int counter = 1;
 	if (IsEmpty()) {
 
-		cout << "The Queue is empty." << endl;
+		cout << "You have no heroes yet! You should try to acquire some first!" << endl;
 	}
 	else {
 
 		Node<T>* temp = m_head;
-		cout << "The values in the queue are: " << endl;
+		cout << "\nThe values in the queue are: " << endl;
 
 		while (temp != nullptr) {
 
-			cout << "Data: " << temp->GetData() << endl;
+			cout << counter << ". " << *temp->GetData() << endl;
 			temp = temp->GetNext();
+			counter++;
 		}
-
-		cout << endl;
 
 	}
 }
@@ -322,11 +322,10 @@ T& Lqueue<T>::operator[] (int x) {
 
 	for (int i = 0; i < m_size; i++) {
 		if (i == x) {
-			return temp;
+			return temp->GetData();
 		}
 		temp = temp->GetNext();
 	}
-	return nullptr;
 }
 
 #endif

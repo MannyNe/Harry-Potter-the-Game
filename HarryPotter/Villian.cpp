@@ -5,55 +5,63 @@ using namespace std;
 
 Villain::Villain() {
 
-
+	m_name = "";
+	m_desc = "";
+	m_combat = 0;
+	m_hp = 0;
+	m_rarity = 0;
 }
 
 Villain::Villain(string name, string desc, int hp, int combat, int rarity) {
 
-
+	m_name = name;
+	m_desc = desc;
+	m_combat = combat;
+	m_hp = hp;
+	m_rarity = rarity;
 }
 
 int Villain::GetCombat() {
 
-
+	return m_combat;
 }
 
 int Villain::GetHp() {
 
-	
+	return m_hp;
 }
 
 int Villain::GetRarity() {
 
-
+	return m_rarity;
 }
 
 string Villain::GetName() {
 
-
+	return m_name;
 }
 
 string Villain::GetDesc() {
 
-	
+	return m_desc;
 }
 
 void Villain::SetHp(int newHp) {
 
-
+	m_hp = newHp;
 }
 
 void Villain::SetCombat(int newCombat) {
 
-
+	m_combat = newCombat;
 }
 
 void Villain::Attack() {
 
-
+	cout << m_name << " waves their wand and screams \"Avada Kedavra\"! " << endl;
 }
 
 ostream& operator<<(ostream& output, Villain& myVillain) {
-	output << "Change this " << myVillain.m_name << endl;
+	output << myVillain.GetName() << " (hp: " << myVillain.GetHp() << " combat: " << myVillain.GetCombat() << ")" << endl;
 	return output;
 }
