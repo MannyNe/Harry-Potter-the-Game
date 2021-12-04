@@ -10,6 +10,10 @@ Game::Game(string filename) {
 
 Game::~Game() {
 
+	// DELETE THE OBJECTS WITHIN BOTH VECTOR ARRAYS THAT
+	// HAVE BEEN ALLOCATED DYNAMICALLY SO THAT MEMLEAKS
+	// WON'T OCCUR.
+	
 	for (unsigned int i = 0; i < m_heroes.size(); i++) {
 
 		delete m_heroes[i];
@@ -25,18 +29,11 @@ Game::~Game() {
 
 void Game::LoadFile() {
 
-	//1 is type
-	//2 is name
-	//3 is desc
-	//4 is hp
-	//5 is combat
-	//6 is rarity
-
 	ifstream file; // VARIABLE NEEDED TO READ FROM FILE
-	Hero* heroN = nullptr;
-	Villain* villianN = nullptr;
+	Hero* heroN = nullptr; // VARIABLE NEEDED TO CREATE NEW HERO OBJECTS
+	Villain* villianN = nullptr; // VARIABLE NEEDED TO CREATE NEW VILLIAN OBJECTS
 	string type = "", name = "", desc = "", hp = "", combat = "", rarity = ""; // STRINGS TO HOLD THE DATA PASSED FROM THE FILE
-	int hpI = 0, combatI = 0, rarityI = 0, heroesC = 0, villiansC = 0;
+	int hpI = 0, combatI = 0, rarityI = 0, heroesC = 0, villiansC = 0; // INTEGER VALUES NEEDED TO STORE THE VALUES AS INTEGERS FROM FILES.
 
 	file.open(m_fileName);
 
@@ -54,6 +51,7 @@ void Game::LoadFile() {
 			getline(file, combat, '|');
 			getline(file, rarity, '\n');
 
+			// CHANGE THE ACQUIRED VARIABLES TO INT FROM STRING
 			hpI = stoi(hp);
 			combatI = stoi(combat);
 			rarityI = RARITY[stoi(rarity)];
@@ -78,6 +76,7 @@ void Game::LoadFile() {
 	cout << " Total Loaded: " << heroesC + villiansC << endl;
 }
 
+// PRINT THE HEROES USING THE OVERLOADED << OPERATOR FROM THE HERO CLASS
 void Game::PrintHeroes() {
 
 	for (unsigned int i = 0; i < m_heroes.size(); i++) {
@@ -86,6 +85,7 @@ void Game::PrintHeroes() {
 	}
 }
 
+// PRINT THE HEROES USING THE OVERLOADED << OPERATOR FROM THE VILLAIN CLASS
 void Game::PrintVillains() {
 
 	for (unsigned int i = 0; i < m_villains.size(); i++) {
@@ -94,15 +94,21 @@ void Game::PrintVillains() {
 	}
 }
 
+// PRINT THE HEROES THAT YOU OWN USING THE DISPLAY METHOD FROM THE LQUEUE CLASS
 void Game::PrintMyHeroes() {
 
+	cout << endl;
 	m_myHeroes.Display();
 }
 
+// THE ACQUIRE HERO METHOD
 void Game::AcquireHero() {
 
-	int choice = 0, rarityL = 0;
+	int choice = 0, rarityL = 0; // VARIABLES USED FOR ACCEPTING CHOICE AND FOR STORING THE RARITY OF THE WIZARD RESPECTIVLEY
 
+	// AS LONG AS THE INPUT IS GREATER THAN 5 AND LESS THAN 0, RUN THE
+	// QUERY REPEATEDLY.
+	
 	do {
 
 		cout << "\nHow rare of a wizard would you like to recruit?:\n"
@@ -116,6 +122,9 @@ void Game::AcquireHero() {
 		cin >> choice;
 
 	} while (choice > 5 || choice < 0);
+
+	// AFTER THE CHOICE, GET THE RARITY FROM THE CONSTANT ARRAY, THEN CALL THE
+	// FOUND HERO METHOD TO ADD A HERO TO YOUR ROSTER.
 
 	switch (choice)
 	{
@@ -149,18 +158,21 @@ void Game::AcquireHero() {
 	}
 }
 
+// THE FOUNDHERO METHOD
 void Game::FoundHero(int rarity) {
 
 	cout << "You ask around to see if anyone would be willing to join you." << endl;
-	int randNum = 0 + rand() % 229;
+	int randNum = 0 + rand() % 229; // TAKE A RANDOM NUMBER BETWEEN 0 AND 229
 
+	// IF THE RANDOM HERO CHOSEN HAS A RARITY WHICH IS SIMILLAR TO THE PLAYERS CHOSEN
+	// RARITY, THEN ADD THE HERO TO THE PLAYERS ROSTER.
 	if (m_heroes[randNum]->GetRarity() == rarity) {
 
-		// MAYBE ADD THE LIST OF COMMON ... THEN ITERARTE FROM THAT
-		cout << "With some amount of effort, " << m_heroes[randNum]->GetName() << " has agreed to join you!" << endl;
-		// use Lqueue.Find to check if the object exists in lqueue
+		// ADD THE HERO IN THE PLAYERS ROSTER ONLY IF HE DOESN'T EXIST IN
+		// THE PLAYERS ROSTER
 		if (m_myHeroes.Find(m_heroes[randNum]) == -1) {
 
+			cout << "With some amount of effort, " << m_heroes[randNum]->GetName() << " has agreed to join you!" << endl;
 			m_myHeroes.Push(m_heroes[randNum]);
 		}
 	}
@@ -170,6 +182,7 @@ void Game::FoundHero(int rarity) {
 	}
 }
 
+// THE MAINMENU METHOD: PROMPTS USER FOR AN INPUT
 void Game::MainMenu() {
 
 	int choice = 0;
@@ -231,20 +244,22 @@ void Game::MainMenu() {
 
 }
 
+// THE PREPAREVILLIAN METHOD
 void Game::PrepareVillains() {
 
 	int players = 0;
 
+	// THE VILLANS MUST BE BETWEEN 0 AND THE ALLOWABLE NUMBER OF VILLIANS
 	do{
 
-		cout << "How many villains would you like to battle?: ";
+		cout << "\nHow many villains would you like to battle?: ";
 		cin >> players;
 
-	} while (players < 0 || players > MAX_VILLAINS); // WILL CHECK THIS OUT LATER. MUST FOCUS ON THE WHILE LOOP.
+	} while (players < 0 || players > MAX_VILLAINS);
 
 	while (players > 0)
 	{
-		//randomy select the villians and add it to the arry or lqueue?
+		//randomy select the villians and add it to the villain battle roster
 		int randNum = 0 + rand() % 93;
 		if (m_bVillains.Find(m_villains[randNum]) == -1) {
 
@@ -254,62 +269,118 @@ void Game::PrepareVillains() {
 	}
 
 	cout << SEP << endl;
-	m_bVillains.Display();
+	m_bVillains.Display(); // DISPLAY THE VILLIANS IN THE BATTLE ROSTER
 	cout << SEP << endl;
 }
 
+// THE PREPAREHEROES METHOD
 void Game::PrepareHeroes() {
 
 	int choice = 0;
-	int size = m_myHeroes.size();
+	int counter = 0;
 
-	if (size == 0) {
+	// AS LONG AS THE USER DOESNT INPUT -1 OR IF HIS CHOICE OF HEROES
+	// DOESNT EXCEED THE ALLOWABLE AMOUNT OF HEROES, ADD HEROES TO THE
+	// BATTLE ROSTER
+	while (choice != -1 && counter < MAX_HEROES)
+	{
 
-		cout << "There are no heroes to battle!" << endl;
+		cout << "Add from 1 to 5 heroes to your battle roster\nEnter -1 when done" << endl;
+		m_myHeroes.Display();
+		cout << endl << "Choice: ";
+		cin >> choice;
+
+		if(choice != -1){
+
+			m_bHeroes.Push(m_myHeroes.operator[](choice - 1));
+			counter++;
+		}
 	}
-	else {
 
-		do 
-		{
-
-			cout << "Add from 1 to 5 heroes to your battle roster\nEnter -1 when done" << endl;
-			m_myHeroes.Display();
-			cout << endl << "Choice: ";
-			cin >> choice;
-
-			if (choice < 0 || choice > int(m_heroes.size())) {
-
-				cout << "Error: More than " << MAX_HEROES << " heroes aren't allowed." << endl;
-			}
-			else {
-
-				m_bHeroes.Push(m_heroes[choice]);
-			}
-
-		} while (choice != -1 || size < MAX_HEROES); // WILL CHECK THIS OUT LATER. MUST FOCUS ON THE WHILE LOOP.
-
-		cout << SEP << endl;
-		cout << "The hero wizards stand ready to battle" << endl;
-		m_bHeroes.Display();
-		cout << SEP << endl;
-	}
+	cout << SEP << endl;
+	cout << "The hero wizards stand ready to battle" << endl;
+	m_bHeroes.Display(); // THE BATTLE READY HEROES
+	cout << SEP << endl;
 }
 
 void Game::Battle() {
 
-	cout << "UNDER DEV" << endl;
-	PrepareVillains();
-	PrepareHeroes();
+	bool ended = false; // CHECKER TO TERMINATE THE GAME IF IT ENDED.
+	bool heroTurn = true; // CHECKER TO DETERMINE IF IT'S THE HEROE'S TURN TO ATTACK.
+	int newHitPoint = 0; // VARIABLE USED TO SET THE NEW HP AFTER AN ATTACK TO A WIZARD.
 
-	cout << "Done Preparing." << endl;
+	// IF THE SIZE OF THE HEROES VECTOR IS ZERO, IT MEANS THAT
+	// THE USER DIDNT ACQUIRE HEROES YET, SO IT WON'T FORWARD 
+	// WITH THE BATTLE.
+	if (m_heroes.size() == 0) {
 
-	do {
+		cout << "There are no hero wizards to battle the villain wizards!" << endl;
+	}
+	else {
+
+		PrepareVillains();
+		cout << endl;
+		PrepareHeroes();
+
+		cout << "Done Preparing." << endl;
+
+		do {
+
+			// IF ITS THE HEROES TURN, THE HERO WILL GET TO ATTACK THE VILLIAN FIRST, AND IF HE ISN'T
+			// THE VILLIAN WILL CONTINUE TO ATTACK
+			cout << m_bHeroes.Front()->GetName() << " VS " << m_bVillains.Front()->GetName() << endl;
+			if (heroTurn) {
+
+				m_bHeroes.Front()->Attack();
+				newHitPoint = m_bVillains.Front()->GetHp() - m_bHeroes.Front()->GetCombat();
+
+				if (newHitPoint > 0) {
+
+					m_bVillains.Front()->SetHp(newHitPoint);
+					heroTurn = false;
+				}
+				else {
+
+					cout << m_bVillains.Pop()->GetName() << " is defeated!" << endl;
+				}
+
+				if (m_bVillains.size() == 0) {
+
+					ResolveBattle();
+					ended = true;
+				}
+			}
+			else {
+
+				m_bVillains.Front()->Attack();
+				newHitPoint = m_bHeroes.Front()->GetHp() - m_bVillains.Front()->GetCombat();
+
+				if (newHitPoint > 0) {
+
+					m_bHeroes.Front()->SetHp(newHitPoint);
+					heroTurn = true;
+				}
+				else {
+
+					cout << m_bHeroes.Pop()->GetName() << " is defeated!" << endl;
+				}
+
+				if (m_bHeroes.size() == 0) {
+
+					ResolveBattle();
+					ended = true;
+				}
+			}
 
 
+		} while (!ended);
 
-	} while ();
+	}
 
-
+	// CLEAR THE MEMORY ALLOCATED FOR THE BATTLING WIZARDS
+	// BECAUSE THE GAME HAS ENDED.
+	m_bHeroes.~Lqueue();
+	m_bVillains.~Lqueue();
 }
 
 void Game::ResolveBattle() {
@@ -320,19 +391,17 @@ void Game::ResolveBattle() {
 
 		cout << "The hero wizards win the battle!" << endl;
 	}
-	else if (m_bHeroes.size() == 0 && m_bVillains.size() > 0) {
-
-		cout << "The villain wizards win the battle!" << endl;
-	}
 	else {
 
-		cout << "There are no winners, one in a million. This even isn't supposed to happen." << endl;
+		cout << "The villain wizards win the battle!" << endl;
 	}
 	cout << SEP << endl;
 }
 
 void Game::TrainHero() {
 
+	// TRAIN A HERO IF THE USER SUBMITS THE CORRECT CHOICE, IF HE/SHE DOESN'T
+	// REPROMPT THE USER AGAIN.
 	int choice = 0;
 	int checker = int(m_myHeroes.size());
 
@@ -345,18 +414,18 @@ void Game::TrainHero() {
 		}
 		else {
 
-			cout << "Which of your wizards would you like to train?:" << endl;
+			cout << "\nWhich of your wizards would you like to train?:\n" << endl;
 			m_myHeroes.Display();
 			cout << endl;
 			cout << "Choice: ";
 			cin >> choice;
 
-			if (choice < checker) {
+			if (choice <= checker) {
 
-				m_myHeroes.operator[](choice)->Train();
+				m_myHeroes.operator[](choice - 1)->Train();
 
-				cout << "\nYour " << m_myHeroes.operator[](choice)->GetName() << "has been trained." << endl;
-				cout << "Your combat is now " << m_myHeroes.operator[](choice)->GetCombat() << endl;
+				cout << "\nYour " << m_myHeroes.operator[](choice - 1)->GetName() << "has been trained." << endl;
+				cout << "Your combat is now " << m_myHeroes.operator[](choice - 1)->GetCombat() << endl;
 			}
 		}
 

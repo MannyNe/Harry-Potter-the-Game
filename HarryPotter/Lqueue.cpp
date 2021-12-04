@@ -124,6 +124,7 @@ private:
 };
 //***********IMPLEMENT LQUEUE HERE***********************
 
+// METHOD USED TO INITIALIZE THE Lqueue CLASS.
 template <class T>
 Lqueue<T>::Lqueue() {
 
@@ -132,6 +133,7 @@ Lqueue<T>::Lqueue() {
 	m_size = 0;
 }
 
+// THE DESTRUCT METHOD
 template <class T>
 Lqueue<T>::~Lqueue() {
 
@@ -141,9 +143,13 @@ Lqueue<T>::~Lqueue() {
 	}
 }
 
+// THE COPY CONSTRUCTOR METHOD
 template <class T>
 Lqueue<T>::Lqueue(const Lqueue& q) {
 
+	// ASSIGN THE HEAD OF THE SOURCE TO A NEW NODE POINTER, THEN
+	// AS LONG AS THE TEMP VARIABLE IS DIFFERENT FROM ZERO, PUSH
+	// VALUE OF THE SOURCE TO THE NEW CALLER Lqueue.
 	Node<T>* temp = q.m_head;
 
 	while (temp != nullptr) {
@@ -153,11 +159,15 @@ Lqueue<T>::Lqueue(const Lqueue& q) {
 	}
 }
 
+// THE OVERLOADED ASSIGNMENT OPERATOR METHOD.
 template <class T>
 Lqueue<T>& Lqueue<T>::operator= (Lqueue& q) {
 
+	// ASSIGN THE HEAD OF THE SOURCE TO A NEW NODE POINTER, THEN
+	// AS LONG AS THE TEMP VARIABLE IS DIFFERENT FROM ZERO, PUSH
+	// VALUE OF THE SOURCE TO THE NEW CALLER Lqueue.
 	if (this == &q) {
-		return *this;
+		return *this; // CHECKING FOR SELF ASSIGNMENT. IF IT IS, RETURN ITSELF.
 	}
 
 	Node<T>* temp = q.m_head;
@@ -171,9 +181,14 @@ Lqueue<T>& Lqueue<T>::operator= (Lqueue& q) {
 	return *this;
 }
 
+// THE PUSH METHOD
 template <class T>
 void Lqueue<T>::Push(const T& q) {
 
+	// PUSH THE ELEMENT THAT IS PASSED TO THIS METHOD TO A NODE
+	// THAT EXISTS, OR CREATE A NEW NODE THEN POINT ITSELF AS THE
+	// HEAD AND TAIL.
+	
 	Node<T>* temp = new Node<T>(q);
 
 	if (m_head == nullptr) {
@@ -189,10 +204,15 @@ void Lqueue<T>::Push(const T& q) {
 	}
 }
 
+// THE POP METHOD
 template <class T>
 T Lqueue<T>::Pop() {
 
+	// POP THE ELEMENT THAT IS LOCATED AT THE FRONT OF THE QUEUE,
+	// THEN RETURN THE DATA OF THAT POPPED ELEMENT
+	
 	Node<T>* temp = nullptr;
+	T temp2;
 
 	if (IsEmpty()) {
 
@@ -206,36 +226,41 @@ T Lqueue<T>::Pop() {
 			m_head = nullptr;
 			m_tail = nullptr;
 			m_size--;
+			temp2 = temp->GetData();
 			delete temp;
-			return m_head->GetData();
+			return temp2;
 		}
 		else {
 
 			temp = m_head;
 			m_head = m_head->GetNext();
 			m_size--;
+			temp2 = temp->GetData();
 			delete temp;
-			return m_head->GetData();
+			return temp2;
 		}
 	}
 }
 
+// THE DISPLAY METHOD.
 template <class T>
 void Lqueue<T>::Display() {
+
+	// DISPLAY THE QUEUE AS LONG AS THE QUEUE/NODE
+	// ISN'T EMPTY
 
 	int counter = 1;
 	if (IsEmpty()) {
 
-		cout << "You have no heroes yet! You should try to acquire some first!" << endl;
+		cout << "\nYou have no heroes yet! You should try to acquire some first!" << endl;
 	}
 	else {
 
 		Node<T>* temp = m_head;
-		cout << "\nThe values in the queue are: " << endl;
 
 		while (temp != nullptr) {
 
-			cout << counter << ". " << *temp->GetData() << endl;
+			cout << counter << ". " << *temp->GetData();
 			temp = temp->GetNext();
 			counter++;
 		}
@@ -243,12 +268,14 @@ void Lqueue<T>::Display() {
 	}
 }
 
+// THE FRONT METHOD: RETURNS THE FRONT OF THE QUEUE
 template <class T>
 T Lqueue<T>::Front() {
 
 	return m_head->GetData();
 }
 
+// THE ISEMPTY METHOD: CHECKS IF THE QUEUE IS EMPTY
 template <class T>
 bool Lqueue<T>::IsEmpty() {
 
@@ -260,14 +287,20 @@ bool Lqueue<T>::IsEmpty() {
 	return false;
 }
 
+// THE SIZE METHOD: RETURNS THE SIZE OF THE QUEUE
 template <class T>
 int Lqueue<T>::size() {
 
 	return m_size;
 }
 
+// THE FIND METHOD
 template <class T>
 int Lqueue<T>::Find(T& q) {
+
+	// CHECK FOR THE ELEMET THAT WAS PASSED TO THIS METHOD
+	// IF IT EXISTS. IF IT DOES, RETURN THE INDEX OF THAT
+	// ELEMENT. IF IT DOESN'T RETURN -1
 
 	Node<T>* temp = m_head;
 
@@ -281,10 +314,14 @@ int Lqueue<T>::Find(T& q) {
 	return -1;
 }
 
-// UNTESTED FUNCTION
+// THE SWAP METHOD: UNCHECKED METHOD
 template <class T>
 void Lqueue<T>::Swap(int x) {
 
+	// SWAP THE DATA OF THE ELEMENT THAT WAS PASSED
+	// TO THIS METHOD WITH THE DATA OF THE ELEMENT THAT
+	// THE DATA THAT'S LOCATED PRIOR TO THE PASSED ELEMENT
+	
 	Node<T>* temp = operator[](x);
 	Node<T>* temp2 = operator[](x - 1);
 	Node<T>* tempT = temp2;
@@ -293,8 +330,13 @@ void Lqueue<T>::Swap(int x) {
 	temp->SetData(tempT->GetData());
 }
 
+// THE CLEAR METHOD
 template <class T>
 void Lqueue<T>::Clear() {
+
+	// AS LONG AS THE TEMPORARY VARIABLE ISN'T A NULL POINTER,
+	// DELETE THE ELEMENT THATS REFERENCED TO IT, THEN SET THE
+	// TEMPORARY VARIBLE TO THE NEXT OF THE CURRENT ELEMENT
 
 	Node<T>* temp = nullptr;
 	while (m_head != nullptr) {
@@ -314,9 +356,11 @@ void Lqueue<T>::Clear() {
 	}
 }
 
-// UNTESTED FUNCTION.
+// THE OVERLOADED [] METHOD
 template <class T>
 T& Lqueue<T>::operator[] (int x) {
+
+	// RETURN THE DATA OF THE ELEMENT LOCATED AT POSITION "x"
 
 	Node<T>* temp = m_head;
 
