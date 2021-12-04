@@ -255,7 +255,7 @@ void Game::PrepareVillains() {
 		cout << "\nHow many villains would you like to battle?: ";
 		cin >> players;
 
-	} while (players < 0 || players > MAX_VILLAINS);
+	} while (players < 0 || players == 0 || players > MAX_VILLAINS);
 
 	while (players > 0)
 	{
@@ -278,24 +278,33 @@ void Game::PrepareHeroes() {
 
 	int choice = 0;
 	int counter = 0;
+	int heroesL = int(m_myHeroes.size());
 
 	// AS LONG AS THE USER DOESNT INPUT -1 OR IF HIS CHOICE OF HEROES
 	// DOESNT EXCEED THE ALLOWABLE AMOUNT OF HEROES, ADD HEROES TO THE
 	// BATTLE ROSTER
-	while (choice != -1 && counter < MAX_HEROES)
-	{
+
+	do {
 
 		cout << "Add from 1 to 5 heroes to your battle roster\nEnter -1 when done" << endl;
 		m_myHeroes.Display();
 		cout << endl << "Choice: ";
 		cin >> choice;
 
-		if(choice != -1){
+		if (heroesL >= choice && choice != -1 && counter < MAX_HEROES) {
 
 			m_bHeroes.Push(m_myHeroes.operator[](choice - 1));
 			counter++;
 		}
-	}
+		else if(heroesL < choice) {
+			cout << "\nThe value you entered is greater than your heroes list, try again" << endl;
+		}
+		else if (counter >= MAX_HEROES) {
+			cout << "\nMaximum amout of heroes reached" << endl;
+			choice = -1;
+		}
+
+	} while (choice != -1);
 
 	cout << SEP << endl;
 	cout << "The hero wizards stand ready to battle" << endl;
@@ -424,7 +433,7 @@ void Game::TrainHero() {
 
 				m_myHeroes.operator[](choice - 1)->Train();
 
-				cout << "\nYour " << m_myHeroes.operator[](choice - 1)->GetName() << "has been trained." << endl;
+				cout << "\nYour " << m_myHeroes.operator[](choice - 1)->GetName() << " has been trained." << endl;
 				cout << "Your combat is now " << m_myHeroes.operator[](choice - 1)->GetCombat() << endl;
 			}
 		}

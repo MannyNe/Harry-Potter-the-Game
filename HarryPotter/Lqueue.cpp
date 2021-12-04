@@ -363,13 +363,14 @@ T& Lqueue<T>::operator[] (int x) {
 	// RETURN THE DATA OF THE ELEMENT LOCATED AT POSITION "x"
 
 	Node<T>* temp = m_head;
+	int counter = x;
 
-	for (int i = 0; i < m_size; i++) {
-		if (i == x) {
-			return temp->GetData();
-		}
+	while (counter > 0) {
 		temp = temp->GetNext();
+		counter--;
 	}
+
+	return temp->GetData();
 }
 
 #endif

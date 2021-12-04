@@ -8,6 +8,16 @@
 #include <time.h>
 using namespace std;
 
+int main() {
+
+    srand(time(NULL)); //Do not use srand anywhere else
+    Game myGame("proj5_data.txt");
+    myGame.LoadFile();
+    myGame.MainMenu();
+    return 0;
+}
+
+/*
 int main(int argc, char* argv[]) {
     srand(time(NULL)); //Do not use srand anywhere else
     if (argc < 2) {
@@ -21,4 +31,4 @@ int main(int argc, char* argv[]) {
     myGame.MainMenu();
     return 0;
 }
-
+*/
